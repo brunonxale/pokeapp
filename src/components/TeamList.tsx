@@ -1,9 +1,7 @@
-
 'use client';
-
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { removePokemon, createTeam, selectTeam } from '@/features/pokemon/pokemonSlice';
+import { removePokemon, createTeam, selectTeam} from '@/features/pokemon/pokemonSlice';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 const TeamList = () => {
@@ -13,6 +11,7 @@ const TeamList = () => {
   const [newTeamName, setNewTeamName] = useState('');
   const [pokemonData, setPokemonData] = useState<{ [key: string]: { image: string; stats: { [key: string]: number } } }>({});
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!selectedTeam || !teams[selectedTeam]) return;
 
@@ -111,9 +110,9 @@ const TeamList = () => {
 
       <div className="flex flex-col gap-4">
         {selectedTeam &&
-          teams[selectedTeam]?.map((pokemonName) => (
+          teams[selectedTeam]?.map((pokemonName, index) => (
             <div
-              key={pokemonName}
+              key={`${pokemonName}-${index}`}  // Usamos el nombre del Pokémon + índice para asegurar una key única
               className="flex items-center bg-red-700 px-4 py-2 rounded-md shadow-md"
             >
               <img

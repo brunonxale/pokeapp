@@ -21,23 +21,23 @@ const pokemonSlice = createSlice({
       if (!state.teams[teamName]) {
         state.teams[teamName] = [];
       }
-
       if (state.teams[teamName].length < 6) {
         state.teams[teamName].push(pokemon);
       } else {
         console.log('Este equipo ya tiene 6 Pokémon.');
       }
     },
+
     removePokemon: (state, action: PayloadAction<{ teamName: string; pokemon: string }>) => {
       const { teamName, pokemon } = action.payload;
       state.teams[teamName] = state.teams[teamName].filter((p) => p !== pokemon);
     },
-    
+
     createTeam: (state, action: PayloadAction<string>) => {
       const teamName = action.payload;
       if (!state.teams[teamName]) {
         state.teams[teamName] = [];
-        state.selectedTeam = teamName; // Seleccionamos automáticamente el nuevo equipo
+        state.selectedTeam = teamName;
       }
     },
 
