@@ -1,12 +1,5 @@
+import { PokemonCardProps } from '@/types/pokemon';
 import { useState } from 'react';
-
-interface PokemonCardProps {
-  name: string;
-  id: number;
-  onHover: (name: string, id: number) => void;
-  onLeave: () => void;
-  onAdd: (name: string) => void;
-}
 
 const PokemonCard = ({ name, id, onHover, onLeave, onAdd }: PokemonCardProps) => {
   const [imageUrl] = useState(

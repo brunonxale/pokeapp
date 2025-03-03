@@ -4,25 +4,8 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { useState, useEffect, useCallback } from 'react';
+import { initialStats, PokemonStat, TeamStats } from '@/types/pokemon';
 
-// Tipos
-interface PokemonStat {
-  stat: { name: string };
-  base_stat: number;
-}
-
-interface TeamStats {
-  [key: string]: number;
-}
-
-const initialStats: TeamStats = {
-  hp: 0,
-  attack: 0,
-  defense: 0,
-  'special-attack': 0,
-  'special-defense': 0,
-  speed: 0,
-};
 
 const BattleArena = () => {
   const teams = useSelector((state: RootState) => state.pokemon.teams) as { [teamName: string]: string[] };
