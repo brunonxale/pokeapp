@@ -1,43 +1,53 @@
+
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { removePokemon, createTeam, selectTeam } from '@/features/pokemon/pokemonSlice';
-import { useState, useMemo, useCallback } from 'react';
-import { useGetPokemonDetailsQuery } from '@/features/pokemon/pokemonApi';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 const TeamList = () => {
   const dispatch = useDispatch();
   const teams = useSelector((state: RootState) => state.pokemon.teams) as { [key: string]: string[] };
   const selectedTeam = useSelector((state: RootState) => state.pokemon.selectedTeam);
   const [newTeamName, setNewTeamName] = useState('');
+  const [pokemonData, setPokemonData] = useState<{ [key: string]: { image: string; stats: { [key: string]: number } } }>({});
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!selectedTeam || !teams[selectedTeam]) return;
 
-  const pokemonQueries = selectedTeam
-    ? teams[selectedTeam]?.map((name) => useGetPokemonDetailsQuery(name)) || []
-    : [];
+    const fetchPokemonData = async () => {
+      setError(null);
+      const newPokemonData: { [key: string]: { image: string; stats: { [key: string]: number } } } = {};
 
-  const error = pokemonQueries.some((query) => query.isError) ? 'Failed to load Pokémon data' : null;
+      try {
+        await Promise.all(
+          teams[selectedTeam].map(async (name) => {
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`);
+            if (!res.ok) throw new Error(`Failed to fetch ${name}`);
+            const data = await res.json();
 
-  const pokemonData = useMemo(() => {
-    return pokemonQueries.reduce<{ [key: string]: { image: string; stats: { [key: string]: number } } }>((acc, query, idx) => {
-      if (query.data) {
-        const pokemonName = teams[selectedTeam]?.[idx] ?? '';
-        acc[pokemonName] = {
-          image: query.data.sprites.other['official-artwork'].front_default,
-          stats: Object.fromEntries(
-            query.data.stats.map((stat: { stat: { name: string }; base_stat: number }) => [
-              stat.stat.name,
-              stat.base_stat,
-            ])
-          ),
-        };
+            newPokemonData[name] = {
+              image: data.sprites.other['official-artwork'].front_default,
+              stats: Object.fromEntries(
+                data.stats.map((stat: { stat: { name: string }; base_stat: number }) => [stat.stat.name, stat.base_stat])
+              ),
+            };
+          })
+        );
+
+        setPokemonData(newPokemonData);
+      } catch {
+        setError('Failed to load Pokémon data');
       }
-      return acc;
-    }, {});
-  }, [pokemonQueries, teams, selectedTeam]);
+    };
+
+    fetchPokemonData();
+  }, [teams, selectedTeam]);
 
   const totalStats = useMemo(() => {
     if (!selectedTeam || !teams[selectedTeam]) return null;
+
     return teams[selectedTeam].reduce(
       (acc, name) => {
         const stats = pokemonData[name]?.stats || {};
@@ -101,33 +111,26 @@ const TeamList = () => {
 
       <div className="flex flex-col gap-4">
         {selectedTeam &&
-          teams[selectedTeam]?.map((pokemonName) => {
-            const query = pokemonQueries.find((q) => q.data?.name === pokemonName);
-            return (
-              <div
-                key={pokemonName}
-                className="flex items-center bg-red-700 px-4 py-2 rounded-md shadow-md"
+          teams[selectedTeam]?.map((pokemonName) => (
+            <div
+              key={pokemonName}
+              className="flex items-center bg-red-700 px-4 py-2 rounded-md shadow-md"
+            >
+              <img
+                src={pokemonData[pokemonName]?.image || '/placeholder.png'}
+                alt={pokemonName}
+                className="w-16 h-16 object-contain mr-4"
+                loading="lazy"
+              />
+              <p className="capitalize text-lg font-semibold flex-1">{pokemonName}</p>
+              <button
+                onClick={() => dispatch(removePokemon({ teamName: selectedTeam, pokemon: pokemonName }))}
+                className="bg-black px-3 py-1 text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors"
               >
-                {query?.isLoading ? (
-                  <div className="w-16 h-16 bg-gray-300 animate-pulse rounded-full mr-4"></div>
-                ) : (
-                  <img
-                    src={pokemonData[pokemonName]?.image || '/placeholder.png'}
-                    alt={pokemonName}
-                    className="w-16 h-16 object-contain mr-4"
-                    loading="lazy"
-                  />
-                )}
-                <p className="capitalize text-lg font-semibold flex-1">{pokemonName}</p>
-                <button
-                  onClick={() => dispatch(removePokemon({ teamName: selectedTeam, pokemon: pokemonName }))}
-                  className="bg-black px-3 py-1 text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors"
-                >
-                  Remove
-                </button>
-              </div>
-            );
-          })}
+                Remove
+              </button>
+            </div>
+          ))}
       </div>
 
       {selectedTeam && totalStats && (
