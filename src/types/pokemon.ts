@@ -16,6 +16,16 @@ export const initialStats: TeamStats = {
   speed: 0,
 };
 
+export interface PokemonStatsProps {
+  name: string;
+  id: number;
+  position: { x: number; y: number };
+}
+export type Stat = {
+  name: string;
+  value: number;
+}
+
 export interface PokemonCardProps {
   name: string;
   id: number;

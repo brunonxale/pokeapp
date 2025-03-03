@@ -3,7 +3,7 @@
 
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { initialStats, PokemonStat, TeamStats } from '@/types/pokemon';
 
 
@@ -18,8 +18,6 @@ const BattleArena = () => {
     stats1: initialStats,
     stats2: initialStats,
   });
-
-  // Función para calcular estadísticas de un equipo
   const calculateTeamStats = useCallback(async (teamName: string): Promise<TeamStats> => {
     if (!teamName || !teams[teamName]) return { ...initialStats };
 
@@ -45,22 +43,17 @@ const BattleArena = () => {
 
     return totalStats;
   }, [teams]);
-
-  // Función para iniciar la batalla
   const determineWinner = async () => {
     if (!team1 || !team2 || team1 === team2) {
       setBattleState((prev) => ({ ...prev, result: 'Please select two different teams.' }));
       return;
     }
-
     setBattleState({ result: 'Battle in progress...', isLoading: true, stats1: initialStats, stats2: initialStats });
-
     const [stats1, stats2] = await Promise.all([calculateTeamStats(team1), calculateTeamStats(team2)]);
 
     const sumStats = (stats: TeamStats) => Object.values(stats).reduce((acc, curr) => acc + curr, 0);
     const total1 = sumStats(stats1);
     const total2 = sumStats(stats2);
-
     const result =
       total1 > total2 ? `${team1} wins! 🏆` :
       total1 < total2 ? `${team2} wins! 🏆` :
@@ -72,8 +65,6 @@ const BattleArena = () => {
   return (
     <div className="w-full mx-auto p-6 bg-blue-500 rounded-lg shadow-lg text-white">
       <h2 className="text-2xl font-bold text-center mb-4">Battle Arena</h2>
-
-      {/* Seleccionar equipos */}
       <div className="mb-4">
         <label className="text-lg block">Select Team 1:</label>
         <select
@@ -105,8 +96,6 @@ const BattleArena = () => {
           ))}
         </select>
       </div>
-
-      {/* Botón para iniciar la batalla */}
       <div className="mb-4">
         <button
           onClick={determineWinner}
@@ -120,15 +109,11 @@ const BattleArena = () => {
           {battleState.isLoading ? 'Battling...' : 'Start Battle'}
         </button>
       </div>
-
-      {/* Mostrar resultado de la batalla */}
       {battleState.result && (
         <div className="mt-6 p-4 bg-gray-800 rounded-lg text-center">
           <h3 className="text-xl font-bold">{battleState.result}</h3>
         </div>
       )}
-
-      {/* Mostrar estadísticas de los equipos */}
       {team1 && team2 && !battleState.isLoading && (
         <div className="mt-6 p-4 bg-gray-800 rounded-lg">
           <h3 className="text-xl font-bold text-center mb-4">Total Team Stats</h3>

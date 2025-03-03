@@ -13,8 +13,6 @@ const TeamList = () => {
   const [newTeamName, setNewTeamName] = useState('');
   const [pokemonData, setPokemonData] = useState<{ [key: string]: { image: string; stats: { [key: string]: number } } }>({});
   const [error, setError] = useState<string | null>(null);
-
-  // Obtener imágenes y estadísticas de los Pokémon
   useEffect(() => {
     if (!selectedTeam || !teams[selectedTeam]) return;
 
@@ -47,7 +45,6 @@ const TeamList = () => {
     fetchPokemonData();
   }, [teams, selectedTeam]);
 
-  // Calcular estadísticas totales del equipo
   const totalStats = useMemo(() => {
     if (!selectedTeam || !teams[selectedTeam]) return null;
 
@@ -63,7 +60,6 @@ const TeamList = () => {
     );
   }, [teams, selectedTeam, pokemonData]);
 
-  // Manejar creación de equipos con useCallback
   const handleCreateTeam = useCallback(() => {
     if (newTeamName.trim()) {
       dispatch(createTeam(newTeamName.trim()));
@@ -75,7 +71,6 @@ const TeamList = () => {
     <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 mx-auto p-6 bg-red-500 rounded-lg shadow-lg text-white">
       <h2 className="text-2xl font-bold text-center mb-4">My Pokémon Teams</h2>
 
-      {/* Crear nuevo equipo */}
       <div className="mb-4 flex gap-2">
         <input
           type="text"
@@ -92,7 +87,6 @@ const TeamList = () => {
         </button>
       </div>
 
-      {/* Selector de equipos */}
       <div className="mb-4">
         <h3 className="text-lg">Select Team:</h3>
         <select
@@ -109,15 +103,12 @@ const TeamList = () => {
         </select>
       </div>
 
-      {/* Error message */}
       {error && <p className="text-red-500 text-center">{error}</p>}
 
-      {/* Mensaje si el equipo está vacío */}
       {selectedTeam && (!teams[selectedTeam] || teams[selectedTeam].length === 0) && (
         <p className="text-center">No Pokémon selected</p>
       )}
 
-      {/* Lista de Pokémon en el equipo */}
       <div className="flex flex-col gap-4">
         {selectedTeam &&
           teams[selectedTeam]?.map((pokemonName) => (
@@ -142,7 +133,6 @@ const TeamList = () => {
           ))}
       </div>
 
-      {/* Mostrar estadísticas del equipo */}
       {selectedTeam && totalStats && (
         <div className="mt-6 p-4 bg-gray-800 rounded-lg">
           <h3 className="text-xl font-bold text-center mb-4">Total Team Stats</h3>
