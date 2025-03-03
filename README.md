@@ -1,45 +1,49 @@
-# Pokémon Team Builder & Battle Arena
+Pokémon Team Builder & Battle Arena
+Description
 
-## Descripción
-Esta aplicación permite a los usuarios crear equipos de hasta 6 Pokémon y enfrentarlos en batallas, utilizando estadísticas obtenidas de la API de PokéAPI. Ofrece una interfaz intuitiva para gestionar equipos y visualizar estadísticas en tiempo real.
+This app allows users to create teams of up to 6 Pokémon and battle them using statistics obtained from the PokéAPI. It provides an intuitive interface to manage teams and view real-time statistics.
+Key Features
 
-## Características principales
-- **Crear equipos personalizados**: Los usuarios pueden crear y gestionar múltiples equipos.
-- **Seleccionar Pokémon**: Agrega Pokémon a tus equipos desde una lista de 151 disponibles.
-- **Visualización de estadísticas**: Consulta las estadísticas de cada Pokémon y del equipo en conjunto.
-- **Modo de batalla**: Enfrenta dos equipos y compara sus estadísticas.
+    Create Custom Teams: Users can create and manage multiple teams.
+    Select Pokémon: Add Pokémon to your teams from a list of 151 available Pokémon.
+    Statistics Visualization: View the statistics of each Pokémon and the overall team.
+    Battle Mode: Battle two teams and compare their stats.
 
-## Tecnologías utilizadas
-- **Next.js 15** con **TypeScript**
-- **Redux Toolkit** para el manejo del estado
-- **RTK Query** para obtener datos de la PokéAPI
-- **React Hook Form** para la gestión de formularios
-- **Tailwind CSS** para el diseño
+Technologies Used
 
-## Instalación y ejecución
-1. Clona el repositorio:
-   ```sh
-   git clone https://github.com/tuusuario/pokemon-team-builder.git
-   cd pokemon-team-builder
-   ```
-2. Instala las dependencias:
-   ```sh
-   npm install
-   ```
-3. Inicia el servidor de desarrollo:
-   ```sh
-   npm run dev
-   ```
-4. Abre el navegador en `http://localhost:3000`.
+    Next.js 15 with TypeScript
+    Redux Toolkit for state management
+    RTK Query for fetching data from the PokéAPI
+    React Hook Form for form handling
+    Tailwind CSS for styling
 
-## Uso
-1. Crea un equipo ingresando un nombre.
-2. Selecciona Pokémon para agregar a tu equipo.
-3. Consulta las estadísticas de tu equipo.
-4. Enfrenta equipos en el modo batalla.
+Installation and Setup
 
-## Contribuciones
-Si deseas contribuir, por favor abre un _issue_ o envía un _pull request_.
+    Clone the repository:
 
-## Licencia
-Este proyecto está bajo la licencia MIT.
+git clone https://github.com/yourusername/pokemon-team-builder.git
+cd pokemon-team-builder
+
+Install dependencies:
+
+npm install
+
+Start the development server:
+
+    npm run dev
+
+    Open the browser at http://localhost:3000.
+
+Usage
+
+    Create a team by entering a name.
+    Select Pokémon to add to your team.
+    View your team's statistics.
+    Battle teams in battle mode.
+
+Contributions
+
+If you'd like to contribute, please open an issue or submit a pull request.
+License
+
+This project is licensed under the MIT License.
