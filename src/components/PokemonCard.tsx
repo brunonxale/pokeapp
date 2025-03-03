@@ -1,80 +1,37 @@
 import { useGetPokemonDetailsQuery } from '@/features/pokemon/pokemonApi';
 import { PokemonCardProps } from '@/types/pokemon';
-import { useState } from 'react';
-import { FaFire, 
-  FaWater, 
-  FaLeaf, 
-  FaBolt , 
-  FaRegSmile, 
-  FaBug, FaHandRock, 
-  FaStar, 
-  FaGhost, 
-  FaSkull, 
-  FaBlackberry, 
-  FaCertificate, 
-  FaDragon, 
-  FaBrain} from 'react-icons/fa';
+import { FaFire, FaWater, FaLeaf, FaBolt, FaRegSmile, FaBug, FaHandRock, FaStar, FaGhost, FaSkull, FaBlackberry, FaCertificate, FaDragon, FaBrain } from 'react-icons/fa';
 import { SiFampay } from 'react-icons/si';
+import { JSX } from 'react';
 
-const getPokemonImageUrl = (id: number) => 
+const typeIcons: Record<string, JSX.Element> = {
+  fire: <FaFire className="text-red-500 mr-1" />,
+  water: <FaWater className="text-blue-500 mr-1" />,
+  grass: <FaLeaf className="text-green-500 mr-1" />,
+  electric: <FaBolt className="text-yellow-500 mr-1" />,
+  normal: <FaRegSmile className="text-yellow-500 mr-1" />,
+  bug: <FaBug className="text-green-500 mr-1" />,
+  ground: <FaBlackberry className="text-orange-950 mr-1" />,
+  fairy: <FaStar className="text-yellow-500 mr-1" />,
+  ghost: <FaGhost className="text-indigo-950 mr-1" />,
+  poison: <FaSkull className="text-indigo-600 mr-1" />,
+  fighting: <FaHandRock className="text-orange-600 mr-1" />,
+  rock: <FaCertificate className="text-orange-600 mr-1" />,
+  dragon: <FaDragon className="text-red-600 mr-1" />,
+  psychic: <FaBrain className="text-red-200 mr-1" />,
+  flying: <SiFampay className="text-blue-500 mr-1" />,
+};
+
+const getPokemonImageUrl = (id: number) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 
 const PokemonCard = ({ name, id, onHover, onLeave, onAdd }: PokemonCardProps) => {
-  const [imageUrl] = useState(getPokemonImageUrl(id));
+  const imageUrl = getPokemonImageUrl(id);
   const { data: pokemonDetails, isLoading, error } = useGetPokemonDetailsQuery(name);
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading Pokémon details</div>;
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'fire':
-        return <FaFire className="text-red-500 mr-1" />;
-      case 'water':
-        return <FaWater className="text-blue-500 mr-1" />;
-      case 'grass':
-        return <FaLeaf className="text-green-500 mr-1" />;
-      case 'electric':
-        return <FaBolt className="text-yellow-500 mr-1" />;
-      case 'normal':
-        return <FaRegSmile className="text-yellow-500 mr-1" />;
-      case 'bug':
-        return <FaBug className="text-green-500 mr-1" />;
-      case 'ground':
-        return <FaBlackberry className="text-orange-950 mr-1" />;
-      case 'fairy':
-        return <FaStar className="text-yellow-500 mr-1" />;
-      case 'ghost':
-        return <FaGhost className="text-indigo-950 mr-1" />;
-      case 'poison':
-        return <FaSkull className="text-indigo-600 mr-1" />;
-      case 'fighting':
-        return <FaHandRock className="text-orange-600 mr-1" />;
-      case 'rock':
-        return <FaCertificate className="text-orange-600 mr-1" />;
-      case 'dragon':
-        return <FaDragon className="text-red-600 mr-1" />;
-      case 'psychic':
-        return <FaBrain className="text-red-200 mr-1" />;
-      case 'flying':
-        return <SiFampay className="text-blue-500 mr-1" />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <div
-      className="
-      cursor-pointer 
-      relative bg-gray-100 
-      border 
-      rounded-lg 
-      shadow-md p-4 
-      flex 
-      flex-col
-      justify-between 
-      items-center 
-      hover:scale-105 
-      transition-transform"
+      className="cursor-pointer relative bg-gray-100 border rounded-lg shadow-md p-4 flex flex-col justify-between items-center hover:scale-105 transition-transform"
       onMouseEnter={() => onHover(name, id)}
       onMouseLeave={onLeave}
     >
@@ -82,13 +39,15 @@ const PokemonCard = ({ name, id, onHover, onLeave, onAdd }: PokemonCardProps) =>
         <img src={imageUrl} alt={name} className="w-20 h-20 object-contain" />
       </div>
       <p className="capitalize text-lg font-semibold mt-2">{name}</p>
+      {isLoading && <div className="text-gray-500">Loading...</div>}
+      {error && <div className="text-red-500">Error loading details</div>}
       {pokemonDetails && (
         <div className="mt-2 text-sm flex flex-col gap-2">
           <div className="flex flex-col">
             Type:
             {pokemonDetails.types.map((type: any) => (
               <span key={type.type.name} className="flex items-center">
-                {getTypeIcon(type.type.name)}
+                {typeIcons[type.type.name] || null}
                 <span className="capitalize">{type.type.name}</span>
               </span>
             ))}
@@ -97,9 +56,7 @@ const PokemonCard = ({ name, id, onHover, onLeave, onAdd }: PokemonCardProps) =>
             <div className="flex flex-col">
               Abilities:
               {pokemonDetails.abilities.map((ability: any) => (
-                <span key={ability.ability.name} className="capitalize">
-                  {ability.ability.name}
-                </span>
+                <span key={ability.ability.name} className="capitalize">{ability.ability.name}</span>
               ))}
             </div>
           )}
